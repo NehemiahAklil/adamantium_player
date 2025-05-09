@@ -9,6 +9,8 @@ jobs:
   build:
     name: Publish binaries
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to create/modify releases
 
     steps:
       - uses: actions/checkout@v3
