@@ -17,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // bool _permissionGranted = false;
   bool _permissionGranted = false;
 
   @override
