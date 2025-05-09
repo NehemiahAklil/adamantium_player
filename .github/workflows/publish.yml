@@ -53,7 +53,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref_name }} # Gets the pushed tag (e.g., v1.0.0)
-          name: Release ${{ github.ref_name }}
+          name: Adamantium Player ${{ github.ref_name }}
           body: Adamantium Player Release ${{ env.VERSION }}
           files: release_assets/${{ env.APK_NAME }}
           #   files: |
