@@ -1,0 +1,52 @@
+name: Flutter Android Release Publish
+
+on:
+  push:
+    tags:
+      - "v*" # Triggers only for version tags (v1.0.0, v2.3.4, etc.)
+
+env:
+  FLUTTER_VERSION: "3.29.3"
+
+jobs:
+  build-android:
+    name: Build and Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to create releases
+      packages: write # Optional for GitHub Packages
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Needed for full tag history
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: "stable"
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Android APK
+        run: flutter build apk --release
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }} # Gets the pushed tag (e.g., v1.0.0)
+          name: Release ${{ github.ref_name }}
+          body: "Adamantium Player Release"
+          files: |
+            build/app/outputs/flutter-apk/app-release.apk
+          draft: false
+          prerelease: false
