@@ -13,13 +13,22 @@ jobs:
       contents: write # Required to create/modify releases
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4 # Updated to v4
+        with:
+          fetch-depth: 0 # Needed for proper tag detection
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+
+      - name: Build APK
+        run: flutter build apk --release
+
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build/app/outputs/flutter-apk/app-release.apk
-          asset_name: adamantium_player
-          tag: ${{ github.ref }}
+          asset_name: adamantium_player.apk # Added .apk extension
+          tag: ${{ github.ref_name }} # Changed to ref_name
           overwrite: true
           body: "New release version"
