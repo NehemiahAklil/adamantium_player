@@ -45,16 +45,18 @@ jobs:
         with:
           name: app-release
           path: build/app/outputs/flutter-apk/app-release.apk
-
+      - name: Rename APK with version
+        run: |
+          mkdir -p release_assets
+          cp build/app/outputs/flutter-apk/app-release.apk "release_assets/${{ env.APK_NAME }}"
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref_name }} # Gets the pushed tag (e.g., v1.0.0)
           name: Release ${{ github.ref_name }}
           body: Adamantium Player Release ${{ env.VERSION }}
-          files: |
-            build/app/outputs/flutter-apk/app-release.apk
-            body: Adamantium Player Release ${{ env.VERSION }}
-          asset_name: ${{ env.APK_NAME }}
+          files: release_assets/${{ env.APK_NAME }}
+          #   files: |
+          #     build/app/outputs/flutter-apk/app-release.apk
           draft: false
           prerelease: false
