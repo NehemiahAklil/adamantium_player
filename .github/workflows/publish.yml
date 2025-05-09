@@ -14,13 +14,19 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write # Required to create releases
-      packages: write # Optional for GitHub Packages
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Needed for full tag history
+
+      - name: Extract version from pubspec
+        id: version
+        run: |
+          VERSION=$(grep 'version:' pubspec.yaml | awk '{print $2}' | tr -d '"')
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "APK_NAME=adamantium_player_v${VERSION}.apk" >> $GITHUB_ENV
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -45,8 +51,10 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }} # Gets the pushed tag (e.g., v1.0.0)
           name: Release ${{ github.ref_name }}
-          body: "Adamantium Player Release"
+          body: Adamantium Player Release ${{ env.VERSION }}
           files: |
             build/app/outputs/flutter-apk/app-release.apk
+            body: Adamantium Player Release ${{ env.VERSION }}
+          asset_name: ${{ env.APK_NAME }}
           draft: false
           prerelease: false
